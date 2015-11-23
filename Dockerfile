@@ -8,7 +8,7 @@ RUN cd /tmp && npm install
 RUN mkdir -p /src && cp -a /tmp/* /src/
 
 # Install deps
-RUN npm install -g pm2
+RUN npm install -g nodemon
 
 # Define working directory
 WORKDIR /src
@@ -19,5 +19,5 @@ ENV WATCHMEN_WEB_PORT 8080
 EXPOSE 8080
 
 # Run app
-CMD ["pm2", "start", "/src/run-monitor-server.js"]
-CMD ["pm2", "start", "/src/run-web-server.js"]
+CMD ["nodemon", "/src/run-monitor-server.js"]
+CMD ["nodemon", "/src/run-web-server.js"]
