@@ -1,14 +1,15 @@
 FROM node:latest
 
-MAINTAINER Aksel Gresvig
-
-# Provides cached layer for node_modules
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install
-RUN mkdir -p /src && cp -a /tmp/* /src/
+MAINTAINER Aksel Gresvig <aksel@plyo.io>
 
 # Install deps
-RUN npm install -g nodemon
+RUN npm install -g nodemon bower
+
+# Provides cached layer for deps
+ADD package.json bower.json .bowerrc /tmp/
+ADD bower.json /tmp/bower.json
+RUN cd /tmp && npm install --quiet && bower install --allow-root
+RUN mkdir -p /src && cp -a /tmp/* /src/
 
 # Define working directory
 WORKDIR /src
