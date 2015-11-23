@@ -2,13 +2,19 @@ redis:
     image: redis:2
     ports:
         - "6379"
+    # expose db in the host /data dir, make sure to create and set permissions for this folder
+    volumes:
+        - /data:/data
 watchmenpopulate:
     # populates with stub data of real services
     build: ./
     links:
         - redis
-    command: node scripts/data-load/populate-services-from-fixtures.js -r
+    command: node scripts/data-load/populate-services-from-fixtures.js -r -e production
     env_file: docker-compose.env
+    # Run in production mode
+    environment:
+    - NODE_ENV=production
 watchmenweb:
     build: ./
     ports:
@@ -17,9 +23,15 @@ watchmenweb:
         - redis
     command: node run-web-server.js
     env_file: docker-compose.env
+    # Run in production mode
+    environment:
+    - NODE_ENV=production
 watchmenserver:
     build: ./
     links:
         - redis
     command: node run-monitor-server.js
     env_file: docker-compose.env
+    # Run in production mode
+    environment:
+    - NODE_ENV=production
