@@ -1,0 +1,40 @@
+redis:
+  image: tutum/redis
+  ports:
+    - "6379"
+  volumes:
+    - /data:/data
+  environment:
+    - REDIS_PASS=**None**
+    - REDIS_APPENDONLY=yes
+    - REDIS_APPENDFSYNC=always
+watchmenserver:
+  image: plyo/watchmen
+  links:
+    - redis
+  command: node run-monitor-server.js
+  environment:
+    - NODE_ENV=production
+watchmenpopulate:
+  image: plyo/watchmen
+  links:
+     - redis
+  command: node scripts/data-load/populate-services-from-fixtures.js -r -e production
+  environment:
+    - NODE_ENV=production
+    - WATCHMEN_REDIS_PORT=6379
+    - WATCHMEN_REDIS_ADDR=redis
+    - NODE_TLS_REJECT_UNAUTHORIZED=0
+watchmenweb:
+  image: plyo/watchmen
+  ports:
+    - "3000:3000"
+  links:
+    - redis
+  command: node run-web-server.js
+  environment:
+    - NODE_ENV=production
+    - WATCHMEN_BASE_URL='http://watchmen.letsnode.com:3000'
+    - WATCHMEN_WEB_PORT=3000
+    - WATCHMEN_ADMINS='aksel@plyo.io'
+    - WATCHMEN_GOOGLE_ANALYTICS_ID='your-GA-ID'
