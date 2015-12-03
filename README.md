@@ -25,17 +25,21 @@ Check the [web interface in action](http://watchmen.letsnode.com/services).
 
 ## Requirements
 
-Make sure bower is installed globally:
-
-    $ npm install -g bower
-
 Get redis from [redis.io](http://redis.io/download) and install it.
 
 ## Install watchmen
 
+Clone the repo by using
+
     $ git clone git@github.com:iloire/watchmen.git
+
+or
+
+    $git clone https://github.com/iloire/watchmen.git
+
+Then install the required dependencies using ``npm``
+
     $ cd watchmen
-    $ bower install
     $ npm install
 
 # Running and stopping watchmen
@@ -45,6 +49,28 @@ Make sure you have `redis-server` in your `PATH`. Then you can run watchmen serv
     $ redis-server redis.conf
     $ node run-monitor-server.js
     $ node run-web-server.js
+
+## Development workflow
+
+Make sure bower is installed globally:
+
+    $ npm install -g bower
+
+### Fetching bower dependencies
+
+    $ bower install
+
+### Re-building watchmen assets
+
+    $ gulp build
+
+### Dev watch
+
+    $ gulp watch
+
+### Running tests
+
+See below.
 
 ## Managing your node processes with pm2
 
@@ -66,6 +92,33 @@ Server list:
     $ pm2 list
 
 ![List of pm2 services](https://github.com/iloire/watchmen/raw/master/screenshots/pm2-01.png)
+
+
+## Managing with node-foreman
+
+`node-foreman` can be used to run the monitor and web server as an Upstart
+service. On Ubuntu systems, this allows the usage of `service watchmen start`.
+
+Watchmen already include a `Procfile` so you can also manage with `nf`.
+
+```
+$ npm install -g foreman
+$ nf start
+```
+
+To export as an Upstart script using the environment variables in a `.env` file:
+
+```
+$ PATH="/home/user/.nvm/versions/v5.1.0/bin:$PATH" nf export -o /etc/init -a watchmen
+```
+
+You can run this without the `-o /etc/init` flag and move the files to this
+directory (or the appropriate Upstart) directory yourself. Make sure you have
+the correct path to the `node` bin, you can find out with `which node`.
+
+More documentation on `node-foreman`:
+
+https://github.com/strongloop/node-foreman
 
 ## Configuration
 
@@ -147,9 +200,9 @@ PingService.prototype.getDefaultOptions = function(){
 
 ![Select ping service](https://github.com/iloire/watchmen/raw/master/screenshots/ping-service-selection.png)
 
-### Monitor plugins
+### Monitor plugins
 
-#### AWS SES Notifications
+#### AWS SES Notifications plugin (provided)
 
 https://github.com/iloire/watchmen-plugin-aws-ses
 
@@ -163,12 +216,15 @@ export WATCHMEN_AWS_SECRET='your AWS secret'
 
 ```
 
-#### Console output
+#### Nodemailer Notifications plugin (third party contribution)
+
+https://www.npmjs.com/package/watchmen-plugin-nodemailer
+
+#### Console output plugin (provided)
 
 https://github.com/iloire/watchmen-plugin-console
 
-
-#### Creating your own plugin
+#### Creating your own custom plugin
 
 A ``watchmen`` instance will be injected through your plugin constructor. Then you can subscribe to the desired events. Best is to show it through an example.
 
@@ -342,11 +398,6 @@ watchmen uses [debug](https://www.npmjs.com/package/debug)
 set DEBUG=*
 ```
 
-## TODO
-
- - Define a data expiration period (per service)
- - Handle auth in ping services.
-
 ## Contributions
 
 You can contribute by:
@@ -355,6 +406,19 @@ You can contribute by:
 - Creating monitor plugins.
 - Creating ping services.
 - Reporting bugs.
+
+## Contributors
+
+- [Iván Loire](http://twitter.com/ivanloire)
+- [Oden](https://github.com/Odenius)
+- [Tom Atkinson](https://github.com/Nibbler999)
+- [Martin Bučko](https://github.com/MartinBucko)
+- [Eric Elliott](https://github.com/ericelliott)
+- [Emily Horsman](https://github.com/emilyhorsman)
+
+### Style guide
+
+Please use [semantic commit messages](http://seesparkbox.com/foundry/semantic_commit_messages)
 
 ## History
 
@@ -497,24 +561,12 @@ You can contribute by:
 
 - First release.
 
-## Contributors
-
-- [Iván Loire](http://twitter.com/ivanloire)
-- [Oden](https://github.com/Odenius)
-- [Tom Atkinson](https://github.com/Nibbler999)
-- [Martin Bučko](https://github.com/MartinBucko)
-- [Eric Elliott](https://github.com/ericelliott)
-
 ## TODO
 
-- Event pagination in service details
-- Twitter integration (pipe events to a twitter account)
-- Security (authentication for accesing the web UI and or editing stuff)
-- Google charts
-- Change configuration from control panel
-- Reset stats from control panel
-- Regular expressions support
-- Reset warning and error counter according to event expiration.
+- Use a beautiful template, like [the Gentella Admin Bootstrap Theme](http://demo.kimlabs.com/gentelella/production/index.html).
+- Regular expressions support in the ``http-contains`` plugin.
+- Define a data expiration period (per service)
+- Handle auth in ping services.
 
 ## Third party attribution
 
