@@ -10,3 +10,10 @@ test:
   override:
     - docker-compose run -d --no-deps watchmenweb
     - npm test
+
+
+deployment:
+  hub:
+    branch: master
+    commands:
+      - $DEPLOY
