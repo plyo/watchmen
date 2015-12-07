@@ -54,7 +54,8 @@
     "watchmen-ping-http-head": "^0.2.0",
     "watchmen-plugin-aws-ses": "0.0.1",
     "watchmen-plugin-console": "0.2.0",
-    "watchmen-plugin-nodemailer": "^0.2.0"
+    "watchmen-plugin-nodemailer": "^0.2.0",
+    "watchmen-plugin-slack": "^0.1.0"
   },
   "devDependencies": {
     "assert": "^1.3.0",
